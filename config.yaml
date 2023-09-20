@@ -1,0 +1,59 @@
+epochs: 
+  value: 100
+
+# Architecture
+use_spatio_temporal_unet:
+  value: True
+
+model_depth:
+  value: 4
+
+max_pool_time:
+  value: True
+
+final_activation:
+  value: "multi_clamp" 
+
+activation:
+  value:  "ELU"
+  
+# Dataset
+patient_list:
+  value:  {
+          "train": ["01", "07", "06", "10", "15", "19", "21", "23", "27", "29"],  
+          "validation": ["01", "14", "16", "17", "18"], 
+          "test": ["28", "28", "08", "09", "20", "24", "25", "26", "03"]
+        }
+
+slices_per_patient_train:
+  value: 5
+
+slices_per_patient_val:
+  value: 5
+
+# Training options
+batch_norm: 
+  desc: Use of batch normalization
+  value: False
+
+learning_rate:
+  value: 0.0001 
+
+batch_size: 
+  desc: Training and validation batch size
+  value: 5
+
+# Test dataset
+slices_per_patient_test:          # Should be "None" is all the slices must be included
+  value: "None"
+
+saved_checkpoint:
+  value: None
+
+
+# Logging
+log_freq:
+  value: 5
+
+val_freq:
+  value: 5

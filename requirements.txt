@@ -1,0 +1,12 @@
+matplotlib
+monai
+natsort
+scikit-image
+SimpleITK
+torch
+tqdm
+wandb
+similaritymeasures
+pandas
+openpyxl
+torcheval==0.0.6
