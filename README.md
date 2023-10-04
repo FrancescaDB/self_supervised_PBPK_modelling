@@ -1,5 +1,7 @@
 This repository contains the code used in the paper "Self-Supervised Learning for Physiologically-Based Pharmacokinetic Modeling in Dynamic PET", which was presented at MICCAI 2023 in Vancouver (Canada).
 
+The paper is available [here]([https://www.example.com](https://link.springer.com/chapter/10.1007/978-3-031-43907-0_28))
+
 If you use this code, please cite our work:
 
 `
