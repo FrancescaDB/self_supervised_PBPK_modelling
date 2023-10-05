@@ -23,12 +23,11 @@ class KineticModel_2TC_curve_fit():
     def __init__(self, patient):
         self.patient = patient
     
-    def read_idif(self, sample_time, t, delay):
+    def read_idif(self, sample_time, t):
         idif_txt_path = os.path.join(root_data_path, "DynamicPET/IDIF", "DynamicFDG_" + self.patient + "_IDIF.txt")
         data = pd.read_csv(idif_txt_path, sep="\t")
         self.idif = torch.Tensor(data["plasma[kBq/cc]"])
-        t_delay = torch.concat([torch.zeros((delay, )), t])
-        self.idif_interp = torch_interp_1d(t_delay[0:len(t)], sample_time, self.idif)
+        self.idif_interp = torch_interp_1d(t, sample_time, self.idif)
         return self.idif_interp
     
     def PET_2TC_KM(self, t, k1, k2, k3, Vb):
@@ -95,7 +94,7 @@ if __name__ == '__main__':
             
             # Curve fit
             KM_2TC = KineticModel_2TC_curve_fit(patient)
-            idif = KM_2TC.read_idif(time_stamp, t, delay=0)
+            idif = KM_2TC.read_idif(time_stamp, t)
             p, pcov2 = curve_fit(KM_2TC.PET_2TC_KM, t, current_TAC_interp, p0=[0.1, 0.1, 0.01, 0.01], bounds=([0.01, 0.01, 0.01, 0], [2, 3, 1, 1]), diff_step=0.001)
             k1, k2, k3, Vb = p
             curve_fit_dict[k] = dict()
@@ -111,13 +110,13 @@ if __name__ == '__main__':
         fit_df.to_excel(os.path.join("image-derived", patient + "_curve_fit_params.xlsx"))
 
         # Visualize measured organ-wise TAC and the estimated one
-        # estimated_TAC_interp = PET_2TC_KM(idif, t, k1, k2, k3, Vb)
+        estimated_TAC_interp = PET_2TC_KM(idif, t, k1, k2, k3, Vb)
 
-        # fig = plt.figure()
-        # plt.plot(time_stamp, current_TAC, "-o", label=labels_to_organ[k])
-        # plt.plot(t, estimated_TAC_interp.detach().numpy(), "k")
-        # plt.ylim([0, 35])
-        # plt.xlim([0, 5])
-        # plt.grid()
-        # plt.legend()
-        # plt.show()
+        fig = plt.figure()
+        plt.plot(time_stamp, current_TAC, "-o", label=labels_to_organ[k])
+        plt.plot(t, estimated_TAC_interp.detach().numpy(), "k")
+        plt.ylim([0, 35])
+        plt.xlim([0, 5])
+        plt.grid()
+        plt.legend()
+        plt.show()
